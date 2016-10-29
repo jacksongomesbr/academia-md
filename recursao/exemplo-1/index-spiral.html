@@ -1,0 +1,76 @@
+<html>
+<head>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
+    <script>
+        window.onload = function() {
+            var canvas = new fabric.StaticCanvas('desenho', {
+                renderOnAddRemove: false
+            });
+            var height = canvas.height;
+            var width = canvas.width;
+
+            function draw() {
+                draw_circles(width/2, 200, 5);
+            }
+
+            function draw_grid(grid_size) {
+                var gridsize = 20;
+                for(var x=1;x<(canvas.width/gridsize);x++)
+                {
+                    canvas.add(new fabric.Line([50*x, 0, 50*x, canvas.height],{ stroke: "#000000", strokeWidth: 1, selectable:false, strokeDashArray: [5, 5], opacity: 0.2}));
+                    canvas.add(new fabric.Line([0, 50*x, canvas.width, 50*x],{ stroke: "#000000", strokeWidth: 1, selectable:false, strokeDashArray: [5, 5], opacity: 0.2}));
+                }
+            }
+
+            function draw_circle(x, y, radius, color, opacity) {
+                color = color || 'black';
+                opacity = opacity || 1.0;
+                var circle = new fabric.Circle({
+                    originX: 'center',
+                    originY: 'center',
+                    left: x,
+                    top: y,
+                    radius: radius,
+                    fill: color,
+                    opacity: opacity
+                });
+                canvas.add(circle);
+                return circle;
+            }
+
+            function draw_circles(x, radius, level) {
+                var tt = 126 * level/4.0;
+                draw_circle(x, height/2, radius*2, 'black', level/20);
+                draw_circle(x, height/2, 2, 'red', 1);
+                if (level > 1) {
+                    level--;
+                    draw_circles(x - radius, radius/2, level);
+                    draw_circles(x + radius, radius/2, level);
+                }
+            }
+
+            function draw_spiral() {
+                var x0 = width/2;
+                var y0 = height/2;
+                for(var r = 0; r < width; r += 0.1) {
+                    var i = 1;
+                    for(var t = 1; t <= 360; t+=i*r*0.1) {
+                        var x = x0 + r * Math.cos(fabric.util.degreesToRadians(t));
+                        var y = y0 + r * Math.sin(fabric.util.degreesToRadians(t));
+                        draw_circle(x, y, r/50);
+                        r += 0.1;
+                        //r = Math.floor(r);
+                    }
+                }
+            }
+
+            //draw_grid();
+            draw_spiral();
+            canvas.renderAll();
+        }
+    </script>
+</head>
+<body>
+    <canvas id="desenho" width="1000" height="500"></canvas>
+</body>
+</html>

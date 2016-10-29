@@ -1,0 +1,56 @@
+<html>
+<head>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
+    <script>
+        window.onload = function() {
+            var canvas = new fabric.StaticCanvas('desenho');
+            var height = canvas.height;
+            var width = canvas.width;
+
+            function draw() {
+                draw_circles(width/2, 200, 5);
+            }
+
+            function draw_grid(grid_size) {
+                var gridsize = 20;
+                for(var x=1;x<(canvas.width/gridsize);x++)
+                {
+                    canvas.add(new fabric.Line([50*x, 0, 50*x, canvas.height],{ stroke: "#000000", strokeWidth: 1, selectable:false, strokeDashArray: [5, 5], opacity: 0.2}));
+                    canvas.add(new fabric.Line([0, 50*x, canvas.width, 50*x],{ stroke: "#000000", strokeWidth: 1, selectable:false, strokeDashArray: [5, 5], opacity: 0.2}));
+                }
+            }
+
+            function draw_circle(x, y, radius, color, opacity) {
+                var circle = new fabric.Circle({
+                    originX: 'center',
+                    originY: 'center',
+                    left: x,
+                    top: y,
+                    radius: radius,
+                    fill: color,
+                    opacity: opacity
+                });
+                canvas.add(circle);
+                return circle;
+            }
+
+            function draw_circles(x, radius, level) {
+                var tt = 126 * level/4.0;
+                draw_circle(x, height/2, radius*2, 'black', level/20);
+                draw_circle(x, height/2, 2, 'red', 1);
+                if (level > 1) {
+                    level--;
+                    draw_circles(x - radius, radius/2, level);
+                    draw_circles(x + radius, radius/2, level);
+                }
+            }
+
+            draw_grid();
+            draw();
+        }
+    </script>
+</head>
+<body>
+    <canvas id="desenho" width="1000" height="500"></canvas>
+</body>
+</html>
